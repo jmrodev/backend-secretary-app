@@ -1,26 +1,57 @@
-var createError = require('http-errors');
+'use strict'
+
 var express = require('express');
 var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+var session = require('express-session');
 
+var authRoutes = require('./routes/auth');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var User = require('./models/user');
 
-var app = express();
+var app = module.exports = express();
 
-// view engine setup
+// config
+
+app.set('view engine', 'pug');
 app.set('views', path.join(__dirname, 'views'));
-app.set('view engine', 'jade');
 
-app.use(logger('dev'));
-app.use(express.json());
+// middleware
+
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.json());
+app.use(session({
+  resave: false, // don't save session if unmodified
+  saveUninitialized: false, // don't create session until something stored
+  secret: 'shhhh, very secret'
+}));
 
+// Session-persisted message middleware
+app.use(function(req, res, next){
+  var err = req.session.error;
+  var msg = req.session.success;
+  delete req.session.error;
+  delete req.session.success;
+  res.locals.message = '';
+  if (err) res.locals.message = '<p class="msg error">' + err + '</p>';
+  if (msg) res.locals.message = '<p class="msg success">' + msg + '</p>';
+  next();
+});
+
+app.use('/', authRoutes);
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+
+// Param middleware for user loading
+app.param('name', function(req, res, next, name){
+  var user = User.users[name];
+  if (user) {
+    req.user = user;
+    next();
+  } else {
+    next(new Error('failed to load user'));
+  }
+});
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
@@ -38,4 +69,8 @@ app.use(function(err, req, res, next) {
   res.render('error');
 });
 
-module.exports = app;
+/* istanbul ignore next */
+if (!module.parent) {
+  app.listen(3000);
+  console.log('Express started on port 3000');
+}
