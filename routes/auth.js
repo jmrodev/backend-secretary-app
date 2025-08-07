@@ -20,4 +20,10 @@ router.get('/login', function(req, res){
 
 router.post('/login', auth.login);
 
+router.get('/signup', function(req, res){
+  res.render('signup');
+});
+
+router.post('/signup', auth.signup);
+
 module.exports = router;

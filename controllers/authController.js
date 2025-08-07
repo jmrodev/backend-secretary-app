@@ -44,3 +44,21 @@ exports.logout = function(req, res){
     res.redirect('/');
   });
 };
+
+exports.signup = function(req, res, next) {
+  if (!req.body) return res.sendStatus(400)
+  User.createUser(req.body.username, req.body.password, function(err, user){
+    if (err) {
+      if (err.code === 'ER_DUP_ENTRY') {
+        req.session.error = 'User already exists, try a different username.';
+        return res.redirect('/signup');
+      }
+      console.error(err);
+      return next(err);
+    }
+    req.session.success = 'User created! You may now login.';
+    res.redirect('/login');
+  });
+};
+
+

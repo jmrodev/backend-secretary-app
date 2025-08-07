@@ -13,7 +13,7 @@ var app = module.exports = express();
 
 // config
 
-app.set('view engine', 'pug');
+app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
 
 // middleware
@@ -71,6 +71,7 @@ app.use(function(err, req, res, next) {
 
 /* istanbul ignore next */
 if (!module.parent) {
-  app.listen(3000);
-  console.log('Express started on port 3000');
+  const port = process.env.PORT || 3000;
+  app.listen(port);
+  console.log('Express started on port ' + port);
 }

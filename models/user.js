@@ -1,36 +1,47 @@
 'use strict'
 
 var bcrypt = require('bcrypt');
+var mysql = require('mysql');
 
-// dummy database
-
-var users = {
-  tj: { name: 'tj' }
-};
-
-// when you create a user, generate a salt
-// and hash the password ('foobar' is the pass here)
-
-bcrypt.hash('foobar', 10, function (err, hash) {
-  if (err) throw err;
-  // store the hash in the "db"
-  users.tj.hash = hash;
+// Create a connection to the database
+const connection = mysql.createConnection({
+  host: process.env.DB_HOST || 'localhost',
+  user: process.env.DB_USER || 'jmro',
+  password: process.env.DB_PASSWORD || 'jmro1975',
+  database: process.env.DB_NAME || 'secretary_app'
 });
 
+// Connect to the database
+connection.connect(err => {
+  if (err) {
+    console.error('Error connecting to the database: ' + err.stack);
+    return;
+  }
+  console.log('Connected to the database as id ' + connection.threadId);
+});
 
-// Authenticate using our plain-object database of doom!
-
+// Authenticate using the database
 exports.authenticate = function(name, pass, fn) {
   if (!module.parent) console.log('authenticating %s:%s', name, pass);
-  var user = users[name];
-  // query the db for the given username
-  if (!user) return fn(null, null)
-  // compare the POSTed password with the stored hash
-  bcrypt.compare(pass, user.hash, function (err, res) {
-    if (err) return fn(err);
-    if (res) return fn(null, user)
-    fn(null, null)
+  connection.query('SELECT * FROM users WHERE name = ?', [name], function (error, results, fields) {
+    if (error) return fn(error);
+    if (results.length == 0) return fn(null, null);
+    var user = results[0];
+    bcrypt.compare(pass, user.hash, function (err, res) {
+      if (err) return fn(err);
+      if (res) return fn(null, user);
+      fn(null, null)
+    });
   });
 };
 
-exports.users = users;
+// Function to create a new user
+exports.createUser = function(name, pass, fn) {
+  bcrypt.hash(pass, 10, function (err, hash) {
+    if (err) return fn(err);
+    connection.query('INSERT INTO users (name, hash) VALUES (?, ?)', [name, hash], function (error, results, fields) {
+      if (error) return fn(error);
+      fn(null, { id: results.insertId, name: name });
+    });
+  });
+};
