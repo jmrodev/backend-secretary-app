@@ -1,41 +1,147 @@
-body {
-  padding: 50px;
-  font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
+/* Global Styles & Typography */
+:root {
+  --primary-color: #4CAF50; /* Green */
+  --secondary-color: #2196F3; /* Blue */
+  --text-color: #333;
+  --light-text-color: #666;
+  --border-color: #ddd;
+  --background-color: #f4f7f6;
+  --card-background: #fff;
+  --error-color: #f44336; /* Red */
+  --success-color: #4CAF50; /* Green */
 }
 
-a {
-  color: #00B7FF;
+body {
+  font-family: 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  line-height: 1.6;
+  color: var(--text-color);
+  background-color: var(--background-color);
+  margin: 0;
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* Align to top */
+  min-height: 100vh; /* Full viewport height */
+}
+
+.container {
+  max-width: 600px;
+  width: 100%;
+  padding: 30px;
+  background-color: var(--card-background);
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  margin-top: 50px; /* Space from top */
+}
+
+h1, h2 {
+  color: var(--primary-color);
+  margin-bottom: 20px;
+  text-align: center;
 }
 
 h1 {
-  font-size: 24px;
-  margin-bottom: 20px;
+  font-size: 2.2em;
 }
 
 h2 {
-  font-size: 20px;
-  margin-bottom: 10px;
+  font-size: 1.8em;
 }
 
 p {
   margin: 10px 0;
 }
 
+a {
+  color: var(--secondary-color);
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+a:hover {
+  color: var(--primary-color);
+}
+
+/* Form Elements */
+form {
+  margin-top: 20px;
+}
+
+form p {
+  margin-bottom: 15px;
+}
+
+label {
+  display: block;
+  margin-bottom: 5px;
+  font-weight: bold;
+  color: var(--light-text-color);
+}
+
 input[type="text"],
 input[type="password"],
-input[type="email"]{
-  width: 100%;
+input[type="email"],
+textarea {
+  width: calc(100% - 22px); /* Account for padding and border */
   padding: 10px;
-  margin: 5px 0 20px;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  border: 1px solid var(--border-color);
+  border-radius: 5px;
+  font-size: 1em;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus,
+input[type="email"]:focus,
+textarea:focus {
+  border-color: var(--secondary-color);
+  box-shadow: 0 0 0 3px rgba(33, 150, 243, 0.2); /* Blue with transparency */
+  outline: none;
 }
 
 input[type="submit"] {
-  background-color: #00B7FF;
+  background-color: var(--primary-color);
   color: white;
-  padding: 10px 15px;
+  padding: 12px 20px;
   border: none;
-  border-radius: 4px;
+  border-radius: 5px;
+  font-size: 1.1em;
   cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  width: 100%;
+}
+
+input[type="submit"]:hover {
+  background-color: #43A047; /* Darker green */
+  transform: translateY(-2px);
+}
+
+/* Messages */
+.msg {
+  padding: 10px 15px;
+  border-radius: 5px;
+  margin-bottom: 15px;
+  font-weight: bold;
+  text-align: center;
+}
+
+.msg.error {
+  background-color: rgba(244, 67, 54, 0.1); /* Light red background */
+  color: var(--error-color);
+  border: 1px solid var(--error-color);
+}
+
+.msg.success {
+  background-color: rgba(76, 175, 80, 0.1); /* Light green background */
+  color: var(--success-color);
+  border: 1px solid var(--success-color);
+}
+
+/* Utility Classes (if needed in EJS) */
+.text-center {
+  text-align: center;
+}
+
+.mt-20 {
+  margin-top: 20px;
 }

@@ -9,19 +9,19 @@ router.get('/', function(req, res){
 });
 
 router.get('/restricted', auth.restrict, function(req, res){
-  res.send('Wahoo! restricted area, click to <a href="/logout">logout</a>');
+  res.redirect('/dashboard');
 });
 
 router.get('/logout', auth.logout);
 
 router.get('/login', function(req, res){
-  res.render('login');
+  res.render('login', { title: 'Login' });
 });
 
 router.post('/login', auth.login);
 
 router.get('/signup', function(req, res){
-  res.render('signup');
+  res.render('signup', { title: 'Sign Up' });
 });
 
 router.post('/signup', auth.signup);

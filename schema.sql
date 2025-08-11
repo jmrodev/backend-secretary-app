@@ -5,5 +5,9 @@ USE secretary_app;
 CREATE TABLE IF NOT EXISTS users (
   id INT AUTO_INCREMENT PRIMARY KEY,
   name VARCHAR(255) NOT NULL UNIQUE,
-  hash VARCHAR(255) NOT NULL
+  hash VARCHAR(255) NOT NULL,
+  is_admin BOOLEAN DEFAULT FALSE NOT NULL
 );
+
+USE secretary_app;
+UPDATE users SET is_admin = TRUE WHERE name = 'tj';

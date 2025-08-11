@@ -11,6 +11,15 @@ exports.restrict = function(req, res, next) {
   }
 };
 
+exports.isAdmin = function(req, res, next) {
+  if (req.session.user && req.session.user.is_admin) {
+    next();
+  } else {
+    req.session.error = 'Access denied. Administrator privileges required.';
+    res.redirect('/login');
+  }
+};
+
 exports.login = function(req, res, next) {
   if (!req.body) return res.sendStatus(400)
   User.authenticate(req.body.username, req.body.password, function(err, user){

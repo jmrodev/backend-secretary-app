@@ -45,3 +45,47 @@ exports.createUser = function(name, pass, fn) {
     });
   });
 };
+
+// Function to find a user by ID
+exports.findById = function(id, fn) {
+  connection.query('SELECT * FROM users WHERE id = ?', [id], function (error, results, fields) {
+    if (error) return fn(error);
+    if (results.length == 0) return fn(null, null);
+    fn(null, results[0]);
+  });
+};
+
+// Function to find all users
+exports.findAll = function(fn) {
+  connection.query('SELECT * FROM users', function (error, results, fields) {
+    if (error) return fn(error);
+    fn(null, results);
+  });
+};
+
+// Function to update a user
+exports.updateUser = function(id, name, password, is_admin, fn) {
+  if (password) {
+    bcrypt.hash(password, 10, function (err, hash) {
+      if (err) return fn(err);
+      connection.query('UPDATE users SET name = ?, hash = ?, is_admin = ? WHERE id = ?', [name, hash, is_admin, id], function (error, results, fields) {
+        if (error) return fn(error);
+        fn(null, { id: id, name: name, is_admin: is_admin });
+      });
+    });
+  } else {
+    connection.query('UPDATE users SET name = ?, is_admin = ? WHERE id = ?', [name, is_admin, id], function (error, results, fields) {
+      if (error) return fn(error);
+      fn(null, { id: id, name: name, is_admin: is_admin });
+    });
+  }
+};
+
+// Function to delete a user
+exports.deleteUser = function(id, fn) {
+  connection.query('DELETE FROM users WHERE id = ?', [id], function (error, results, fields) {
+    if (error) return fn(error);
+    fn(null, results.affectedRows > 0);
+  });
+};
+

@@ -7,6 +7,7 @@ var session = require('express-session');
 var authRoutes = require('./routes/auth');
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+var adminRoutes = require('./routes/admin');
 var User = require('./models/user');
 
 var app = module.exports = express();
@@ -15,7 +16,6 @@ var app = module.exports = express();
 
 app.set('view engine', 'ejs');
 app.set('views', path.join(__dirname, 'views'));
-
 // middleware
 
 app.use(express.static(path.join(__dirname, 'public')));
@@ -42,6 +42,7 @@ app.use(function(req, res, next){
 app.use('/', authRoutes);
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use('/admin', adminRoutes);
 
 // Param middleware for user loading
 app.param('name', function(req, res, next, name){
@@ -67,7 +68,7 @@ app.use(function(err, req, res, next) {
 
   // render the error page
   res.status(err.status || 500);
-  res.render('error');
+  res.render('error', { title: 'Error' });
 });
 
 /* istanbul ignore next */
