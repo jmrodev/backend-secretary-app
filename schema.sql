@@ -9,5 +9,8 @@ CREATE TABLE IF NOT EXISTS users (
   is_admin BOOLEAN DEFAULT FALSE NOT NULL
 );
 
-USE secretary_app;
-UPDATE users SET is_admin = TRUE WHERE name = 'tj';
+-- Insert default admin user 'tj' with a placeholder password hash.
+-- IMPORTANT: Replace 'YOUR_HASHED_PASSWORD_FOR_FOOBAR' with the actual hashed password for 'foobar'.
+-- You can obtain this by registering 'tj' with 'foobar' as password through the application
+-- and then retrieving the hash from the database, or by using a known hashing utility.
+INSERT INTO users (name, hash, is_admin) VALUES ('tj', '$2b$10$Mj47ItTysVw4.6DDPgNf6ugmxCB1.rdpSDvFjQVuKPjqiz/Gz0NTe', TRUE);
